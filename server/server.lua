@@ -77,11 +77,10 @@ end)
 --  VERSJONSKONTROLL
 --====================================================--
 local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version', 0)
-local resourceName = GetCurrentResourceName()
 
 CreateThread(function()
     Wait(3000)
-    PerformHttpRequest('https://api.github.com/repos/MrMoen/mrmoen_afterdark/releases/latest', function(status, body, headers)
+    PerformHttpRequest('https://api.github.com/repos/mrmoen7165/mrmoen_afterdark/releases/latest', function(status, body)
         if status ~= 200 then
             print(('^3[AFTERDARK]^7 Kunne ikke hente versjon fra GitHub (HTTP %s)'):format(status))
             return
@@ -93,10 +92,10 @@ CreateThread(function()
             return
         end
 
-        local latest = data.tag_name:gsub("v", "") -- fjerner "v" i f.eks. v1.1.3
+        local latest = data.tag_name:gsub("v", "")
         if latest ~= currentVersion then
-            print(('^3[AFTERDARK]^7 Ny versjon tilgjengelig! ^2%s^7 (nåværende: ^1%s^7)'):format(latest, currentVersion))
-            print('^3[AFTERDARK]^7 Last ned nyeste versjon på: ^4https://github.com/MrMoen/mrmoen_afterdark/releases/latest^7')
+            print(('^3[AFTERDARK]^7 Ny versjon tilgjengelig! ^2v%s^7 (nåværende: ^1v%s^7)'):format(latest, currentVersion))
+            print('^3[AFTERDARK]^7 Last ned nyeste versjon på: ^4https://github.com/mrmoen7165/mrmoen_afterdark/releases/latest^7')
         else
             print(('^2[AFTERDARK]^7 Du kjører siste versjon (^5v%s^7).'):format(currentVersion))
         end
