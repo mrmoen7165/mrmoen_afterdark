@@ -1,0 +1,1 @@
+pest_medisin     = {name = 'pest_medisin', label = 'Svartedauen-medisin',   weight = 50, type = 'item',  image = 'moen_pest.png', unique = false, useable = true, shouldClose = true, combinable = nil, level = 0, description = 'Et sterkt brygg som kan kurere svartedauen.'},
