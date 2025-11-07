@@ -72,3 +72,33 @@ RegisterNetEvent("mrmoen_afterdark:removePestMedisin", function()
         debugPrint(("Kunne ikke finne '%s' hos spiller %s"):format(itemName, GetPlayerName(src)))
     end
 end)
+
+--====================================================--
+--  VERSJONSKONTROLL
+--====================================================--
+local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version', 0)
+local resourceName = GetCurrentResourceName()
+
+CreateThread(function()
+    Wait(3000)
+    PerformHttpRequest('https://api.github.com/repos/MrMoen/mrmoen_afterdark/releases/latest', function(status, body, headers)
+        if status ~= 200 then
+            print(('^3[AFTERDARK]^7 Kunne ikke hente versjon fra GitHub (HTTP %s)'):format(status))
+            return
+        end
+
+        local data = json.decode(body)
+        if not data or not data.tag_name then
+            print('^1[AFTERDARK]^7 Ugyldig respons fra GitHub API.')
+            return
+        end
+
+        local latest = data.tag_name:gsub("v", "") -- fjerner "v" i f.eks. v1.1.3
+        if latest ~= currentVersion then
+            print(('^3[AFTERDARK]^7 Ny versjon tilgjengelig! ^2%s^7 (nåværende: ^1%s^7)'):format(latest, currentVersion))
+            print('^3[AFTERDARK]^7 Last ned nyeste versjon på: ^4https://github.com/MrMoen/mrmoen_afterdark/releases/latest^7')
+        else
+            print(('^2[AFTERDARK]^7 Du kjører siste versjon (^5v%s^7).'):format(currentVersion))
+        end
+    end, 'GET', '', {['User-Agent'] = 'MrMoen_Afterdark_VersionCheck'})
+end)
