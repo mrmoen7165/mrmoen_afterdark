@@ -74,30 +74,32 @@ RegisterNetEvent("mrmoen_afterdark:removePestMedisin", function()
 end)
 
 --====================================================--
---  VERSJONSKONTROLL
+--  VERSJONSKONTROLL (mrmoen_afterdark)
 --====================================================--
 local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version', 0)
+local resourceName = GetCurrentResourceName()
+
+-- URL til fxmanifest.lua i GitHub-repoet ditt (main-branch)
+local githubVersionURL = "https://raw.githubusercontent.com/mrmoen7165/mrmoen_afterdark/main/fxmanifest.lua"
 
 CreateThread(function()
-    Wait(3000)
-    PerformHttpRequest('https://api.github.com/repos/mrmoen7165/mrmoen_afterdark/releases/latest', function(status, body)
-        if status ~= 200 then
-            print(('^3[AFTERDARK]^7 Kunne ikke hente versjon fra GitHub (HTTP %s)'):format(status))
-            return
-        end
-
-        local data = json.decode(body)
-        if not data or not data.tag_name then
-            print('^1[AFTERDARK]^7 Ugyldig respons fra GitHub API.')
-            return
-        end
-
-        local latest = data.tag_name:gsub("v", "")
-        if latest ~= currentVersion then
-            print(('^3[AFTERDARK]^7 Ny versjon tilgjengelig! ^2v%s^7 (nåværende: ^1v%s^7)'):format(latest, currentVersion))
-            print('^3[AFTERDARK]^7 Last ned nyeste versjon på: ^4https://github.com/mrmoen7165/mrmoen_afterdark/releases/latest^7')
+    print("^3["..resourceName.."]^7 Laster versjonssjekk...")
+    PerformHttpRequest(githubVersionURL, function(statusCode, response)
+        if statusCode == 200 then
+            local latestVersion = response:match("version ['\"]([0-9%.]+)['\"]")
+            if latestVersion then
+                if latestVersion ~= currentVersion then
+                    print("^6["..resourceName.."]^7 En ny versjon er tilgjengelig!")
+                    print("^2Din versjon:^7 " .. currentVersion .. "  ^3Nyeste versjon:^7 " .. latestVersion)
+                    print("^5Oppdater fra GitHub:^7 https://github.com/mrmoen7165/mrmoen_afterdark")
+                else
+                    print("^2["..resourceName.."]^7 Du kjører siste versjon ("..currentVersion..")")
+                end
+            else
+                print("^1["..resourceName.."]^7 Klarte ikke å lese versjon fra GitHub-responsen.")
+            end
         else
-            print(('^2[AFTERDARK]^7 Du kjører siste versjon (^5v%s^7).'):format(currentVersion))
+            print("^1["..resourceName.."]^7 Kunne ikke sjekke versjon (GitHub-status: " .. statusCode .. ")")
         end
-    end, 'GET', '', {['User-Agent'] = 'MrMoen_Afterdark_VersionCheck'})
+    end, "GET", "", {["User-Agent"] = "mrmoen_afterdark-version-check"})
 end)
