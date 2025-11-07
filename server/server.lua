@@ -79,7 +79,7 @@ end)
 local currentVersion = GetResourceMetadata(GetCurrentResourceName(), 'version', 0)
 local resourceName = GetCurrentResourceName()
 
--- URL til fxmanifest.lua i GitHub-repoet ditt (main-branch)
+-- RIKTIG RAW-LENKE:
 local githubVersionURL = "https://raw.githubusercontent.com/mrmoen7165/mrmoen_afterdark/main/fxmanifest.lua"
 
 CreateThread(function()
