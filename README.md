@@ -1,5 +1,5 @@
 # 💀 MRMOEN_AFTERDARK
-### Et originalt RedM-script utviklet og eid av **MrMoen**
+
 
 ---
 
